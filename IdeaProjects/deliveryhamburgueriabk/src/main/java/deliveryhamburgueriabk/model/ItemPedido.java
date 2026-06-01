@@ -1,5 +1,6 @@
 package deliveryhamburgueriabk.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import deliveryhamburgueriabk.model.Produto;
 import jakarta.persistence.*;
 
@@ -13,6 +14,7 @@ public class ItemPedido {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id", nullable = false)
+    @JsonIgnore
     private Pedido pedido;
 
     @ManyToOne
@@ -50,6 +52,14 @@ public class ItemPedido {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     public int getQuantidade() {

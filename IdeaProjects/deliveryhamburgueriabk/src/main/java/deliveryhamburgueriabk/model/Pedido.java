@@ -66,12 +66,24 @@ public class Pedido {
         return valorTotal;
     }
 
+    public double calcularTotal(){
+        return valorTotal;
+    }
+
     public FormaPagamento getFormaPagamento() {
         return formaPagamento;
     }
 
     public StatusPedido getStatusPedido() {
         return statusPedido;
+    }
+
+    public TipoPedido getTipoPedido() {
+        return tipoPedido;
+    }
+
+    public void setTipoPedido(TipoPedido tipoPedido) {
+        this.tipoPedido = tipoPedido;
     }
 
     public void setStatusPedido(StatusPedido statusPedido) {

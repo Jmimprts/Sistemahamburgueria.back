@@ -1,4 +1,10 @@
 package deliveryhamburgueriabk.factorymethod;
 
-public class PedidoEntregaFactory {
+import deliveryhamburgueriabk.model.Pedido;
+
+public class PedidoEntregaFactory implements IPedidoFactory{
+    @Override
+    public IPedido criarPedido(Pedido pedido) {
+        return new PedidoEntrega(pedido);
+    }
 }

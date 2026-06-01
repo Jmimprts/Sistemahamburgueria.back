@@ -22,6 +22,8 @@ public class Usuario {
     @Column(nullable = false)
     private String endereco;
 
+    public Usuario() {}
+
     public Usuario(String nome, String email, String senha, String endereco) {
         this.nome = nome;
         this.email = email;
