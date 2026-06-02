@@ -1,5 +1,8 @@
 package deliveryhamburgueriabk.controller;
 
+import deliveryhamburgueriabk.dto.request.LoginRequestDTO;
+import deliveryhamburgueriabk.dto.request.UsuarioRequestDTO;
+import deliveryhamburgueriabk.dto.response.UsuarioResponseDTO;
 import deliveryhamburgueriabk.enums.Perfil;
 import deliveryhamburgueriabk.model.Usuario;
 import deliveryhamburgueriabk.service.interfaces.IUsuarioService;
@@ -7,8 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -22,26 +25,37 @@ public class UsuarioController {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<Usuario> registrar(@Valid @RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponseDTO> registrar(@Valid @RequestBody UsuarioRequestDTO dto) {
+        Usuario usuario = new Usuario();
+        usuario.setNome(dto.nome());
+        usuario.setEmail(dto.email());
+        usuario.setSenha(dto.senha());
+        usuario.setEndereco(dto.endereco());
+        usuario.setTelefone(dto.telefone());
         usuario.setPerfil(Perfil.CLIENTE);
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrar(usuario));
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(UsuarioResponseDTO.de(usuarioService.cadastrar(usuario)));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Usuario> login(@RequestBody Map<String, String> credenciais) {
-        return ResponseEntity.ok(usuarioService.login(
-                credenciais.get("email"),
-                credenciais.get("senha")
-        ));
+    public ResponseEntity<UsuarioResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
+        return ResponseEntity.ok(
+                UsuarioResponseDTO.de(usuarioService.login(dto.email(), dto.senha()))
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+    public ResponseEntity<UsuarioResponseDTO> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(UsuarioResponseDTO.de(usuarioService.buscarPorId(id)));
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listar() {
-        return ResponseEntity.ok(usuarioService.listarTodos());
+    public ResponseEntity<List<UsuarioResponseDTO>> listar() {
+        List<UsuarioResponseDTO> usuarios = usuarioService.listarTodos()
+                .stream()
+                .map(UsuarioResponseDTO::de)
+                .toList();
+        return ResponseEntity.ok(usuarios);
     }
 }

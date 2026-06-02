@@ -1,11 +1,14 @@
 package deliveryhamburgueriabk.controller;
 
+import deliveryhamburgueriabk.dto.request.ProdutoRequestDTO;
+import deliveryhamburgueriabk.dto.response.ProdutoResponseDTO;
 import deliveryhamburgueriabk.model.Produto;
 import deliveryhamburgueriabk.service.interfaces.IProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -20,29 +23,52 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Produto>> listar() {
-        return ResponseEntity.ok(produtoService.listarTodos());
+    public ResponseEntity<List<ProdutoResponseDTO>> listar() {
+        List<ProdutoResponseDTO> produtos = produtoService.listarTodos()
+                .stream()
+                .map(ProdutoResponseDTO::de)
+                .toList();
+        return ResponseEntity.ok(produtos);
     }
 
     @GetMapping("/populares")
-    public ResponseEntity<List<Produto>> populares() {
-        return ResponseEntity.ok(produtoService.listarMaisPopulares());
+    public ResponseEntity<List<ProdutoResponseDTO>> populares() {
+        List<ProdutoResponseDTO> produtos = produtoService.listarMaisPopulares()
+                .stream()
+                .map(ProdutoResponseDTO::de)
+                .toList();
+        return ResponseEntity.ok(produtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscar(@PathVariable Long id) {
-        return ResponseEntity.ok(produtoService.buscarPorId(id));
+    public ResponseEntity<ProdutoResponseDTO> buscar(@PathVariable Long id) {
+        return ResponseEntity.ok(ProdutoResponseDTO.de(produtoService.buscarPorId(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Produto> criar(@Valid @RequestBody Produto produto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoService.criar(produto));
+    public ResponseEntity<ProdutoResponseDTO> criar(@Valid @RequestBody ProdutoRequestDTO dto) {
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setDescricao(dto.descricao());
+        produto.setDisponivel(dto.disponivel());
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ProdutoResponseDTO.de(produtoService.criar(produto)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id,
-                                             @Valid @RequestBody Produto produto) {
-        return ResponseEntity.ok(produtoService.atualizar(id, produto));
+    public ResponseEntity<ProdutoResponseDTO> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody ProdutoRequestDTO dto) {
+
+        Produto produto = new Produto();
+        produto.setNome(dto.nome());
+        produto.setPreco(dto.preco());
+        produto.setDescricao(dto.descricao());
+        produto.setDisponivel(dto.disponivel());
+
+        return ResponseEntity.ok(ProdutoResponseDTO.de(produtoService.atualizar(id, produto)));
     }
 
     @DeleteMapping("/{id}")

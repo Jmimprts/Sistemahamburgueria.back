@@ -1,6 +1,6 @@
 package deliveryhamburgueriabk.controller;
 
-import deliveryhamburgueriabk.model.Pedido;
+import deliveryhamburgueriabk.dto.response.PedidoResponseDTO;
 import deliveryhamburgueriabk.service.interfaces.IEntregaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +17,12 @@ public class EntregaController {
     }
 
     @PatchMapping("/{pedidoId}/sair")
-    public ResponseEntity<Pedido> sairParaEntrega(@PathVariable Long pedidoId) {
-        return ResponseEntity.ok(entregaService.sairParaEntrega(pedidoId));
+    public ResponseEntity<PedidoResponseDTO> sairParaEntrega(@PathVariable Long pedidoId) {
+        return ResponseEntity.ok(PedidoResponseDTO.de(entregaService.sairParaEntrega(pedidoId)));
     }
 
     @PatchMapping("/{pedidoId}/confirmar")
-    public ResponseEntity<Pedido> confirmarEntrega(@PathVariable Long pedidoId) {
-        return ResponseEntity.ok(entregaService.confirmarEntrega(pedidoId));
+    public ResponseEntity<PedidoResponseDTO> confirmarEntrega(@PathVariable Long pedidoId) {
+        return ResponseEntity.ok(PedidoResponseDTO.de(entregaService.confirmarEntrega(pedidoId)));
     }
 }
